@@ -1,8 +1,0 @@
-{
-  "name": "Swiss Army Widget",
-  "description": "Creates a widget that contains some handy tools.",
-  "uuid": "PanelMenu@debian.love",
-  "shell-version": [
-    "43"
-  ]
-}
