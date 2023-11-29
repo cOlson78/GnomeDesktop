@@ -36,23 +36,23 @@ class MyPopup extends PanelMenu.Button {
 		super._init(0);
 
 		//Code for the smiley icon
-		let icon = new St.Icon({
+		let smile = new St.Icon({
 			icon_name: 'face-smile-symbolic',
 			style_class : 'system-status-icon',
 		});
 
-		this.add_child(icon);
+		this.add_child(smile);
 
 		//Title section text
 		let titleSection = new PopupMenu.PopupMenuSection();
 		titleSection.actor.add_child(new PopupMenu.PopupMenuItem('The \"Lovely\" switchblade widget'));
 		this.menu.addMenuItem(titleSection);
 
-		let pmItem = new PopupMenu.PopupMenuItem('Unit converter');
-		pmItem.add_child(new St.Label({text : '-metric'}));
-		this.menu.addMenuItem(pmItem);
+		let unitc = new PopupMenu.PopupMenuItem('Unit converter');
+		unitc.add_child(new St.Label({text : '-metric'}));
+		this.menu.addMenuItem(unitc);
 
-		pmItem.connect('activate', () => {
+		unitc.connect('activate', () => {
 			log('clicked');
 			Main.notify(_('This is the unit converter'));
 		});
@@ -73,27 +73,30 @@ class MyPopup extends PanelMenu.Button {
 		//});
 
 		// sub menu
-		let subItem = new PopupMenu.PopupSubMenuMenuItem('Calculators');
-		this.menu.addMenuItem(subItem);
+		let calcs = new PopupMenu.PopupSubMenuMenuItem('Calculators');
+		this.menu.addMenuItem(calcs);
 		let normCalc = new PopupMenu.PopupMenuItem('Normal');
-		subItem.menu.addMenuItem(normCalc);
+		calcs.menu.addMenuItem(normCalc);
 		let mortCalc = new PopupMenu.PopupMenuItem('Mortgage');
-		subItem.menu.addMenuItem(mortCalc);
+		calcs.menu.addMenuItem(mortCalc);
 
 		normCalc.connect('activate', () => {
 			normPopup = new normCalcPopup();
 		});
 
 		mortCalc.connect('activate', () => {
-			Main.notify(_('Here is a primitive mortgage calculator.'));
+			mortPopup = new mortCalcPopup();
 		});
 
 		// second sub menu
-		let subItem2 =  new PopupMenu.PopupSubMenuMenuItem('Time tools');
-		this.menu.addMenuItem(subItem2);
-		subItem2.menu.addMenuItem(new PopupMenu.PopupMenuItem('Stopwatch'));
-		subItem2.menu.addMenuItem(new PopupMenu.PopupMenuItem('Timer'));
-		subItem2.menu.addMenuItem(new PopupMenu.PopupMenuItem('Clock'));
+		let times =  new PopupMenu.PopupSubMenuMenuItem('Time tools');
+		this.menu.addMenuItem(times);
+		let stopwatch = new PopupMenu.PopupMenuItem('Stopwatch');
+		times.menu.addMenuItem(stopwatch);
+		let timer = new PopupMenu.PopupMenuItem('Timer');
+		times.menu.addMenuItem(timer);
+		let clock = new PopupMenu.PopupMenuItem('Clock');
+		times.menu.addMenuItem(clock);
 
 		// section
 		//let popupMenuSection = new PopupMenu.PopupMenuSection();
@@ -101,16 +104,69 @@ class MyPopup extends PanelMenu.Button {
 		//this.menu.addMenuItem(popupMenuSection);
 
 		// image item
-		let popupImageMenuItem = new PopupMenu.PopupImageMenuItem(
+		let shellCommands = new PopupMenu.PopupImageMenuItem(
 			'Linux Shell Commands',
 			'security-high-symbolic',
 		);
-		this.menu.addMenuItem(popupImageMenuItem);
+		this.menu.addMenuItem(shellCommands);
 
 		// you can close, open and toggle the menu with
 		// this.menu.close();
 		// this.menu.open();
 		// this.menu.toggle();
+	}
+});
+
+//Popup class for the mortgage calculator
+const mortCalcPopup = GObject.registerClass(
+class mortCalcPopup extends PanelMenu.Button {
+	_init(){
+		super._init(0);
+
+		//Variables
+		var amount;
+		var years;
+		var intrest;
+
+		//Section text for instructions
+		let insection = new PopupMenu.PopupMenuSection();
+		insection.actor.add_child(new PopupMenu.PopupMenuItem('This is a primative mortgage calculator. \nIt is designed to be an estimate, so actual values may differ in real life.'));
+		this.menu.addMenuItem(insection);
+
+		//Section text for amount
+		let amountSection = new PopupMenu.PopupMenuSection();
+		amountSection.actor.add_child(new PopupMenu.PopupMenuItem('Put in the amount borrowed'));
+		this.menu.addMenuItem(amountSection);
+
+		//First textbox for the amount
+		let entry;
+
+		entry = new St.Entry({
+			hint_text: 'Enter borrowed amount',
+			track_hover: true,
+			can_focus: true
+		});
+
+		let entryItem = new PopupMenu.PopupBaseMenuItem({
+			reactive: false
+		});
+		entryItem.actor.add_child(entry);
+
+		entry.clutter_text.connect('text-changed', (widget) => {
+			let text = widget.get_text();
+			let textNum = parseFloat(text);
+			amount = textNum;
+		});
+
+		this.menu.addMenuItem(entryItem);
+
+		//Button for canceling
+		let popupMenuCancel = new PopupMenu.PopupMenuItem('Cancel');
+		this.menu.addMenuItem(popupMenuCancel);
+		popupMenuCancel.connect('activate', () => {
+			this.destroy();
+		});
+		this.menu.open();
 	}
 });
 
@@ -145,7 +201,7 @@ class normCalcPopup extends PanelMenu.Button {
 
 		entry.clutter_text.connect('text-changed', (widget) => {
 			let text = widget.get_text();
-			let textNum = parseInt(text,10);
+			let textNum = parseFloat(text);
 			num1 = textNum;
 		});
 
@@ -171,7 +227,7 @@ class normCalcPopup extends PanelMenu.Button {
 
 		entry2.clutter_text.connect('text-changed', (widget) => {
 			let text2 = widget.get_text();
-			let textNum2 = parseInt(text2,10);
+			let textNum2 = parseFloat(text2);
 			num2 = textNum2;
 		});
 
@@ -179,7 +235,7 @@ class normCalcPopup extends PanelMenu.Button {
 
 		//Third section text for the operator
 		let section3 = new PopupMenu.PopupMenuSection();
-		section3.actor.add_child(new PopupMenu.PopupMenuItem('Put in operator (1 for add, 2 for sub, 3 for mult, 4 for mod)'));
+		section3.actor.add_child(new PopupMenu.PopupMenuItem('Put in operator (1=add, 2=sub, 3=mult, 4=mod, 5=div, 6=pow)'));
 		this.menu.addMenuItem(section3);
 
 		//Third textbox for the operation
@@ -220,6 +276,12 @@ class normCalcPopup extends PanelMenu.Button {
 					break;
 				case 4:
 					Main.notify(_('' + num1 + ' % ' + num2 + ' = ' + (num1%num2)));
+					break;
+				case 5:
+					Main.notify(_('' + num1 + ' / ' + num2 + ' = ' + (num1/num2)));
+					break;
+				case 6:
+					Main.notify(_('' + num1 + ' ^ ' + num2 + ' = ' + (Math.pow(num1, num2))));
 					break;
 				default:
 					Main.notify(_('Invalid operator number'));
