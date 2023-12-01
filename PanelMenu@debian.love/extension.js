@@ -142,7 +142,7 @@ class mortCalcPopup extends PanelMenu.Button {
 		let entry;
 
 		entry = new St.Entry({
-			hint_text: 'Enter borrowed amount',
+			hint_text: 'Enter borrowed amount:',
 			track_hover: true,
 			can_focus: true
 		});
@@ -159,6 +159,74 @@ class mortCalcPopup extends PanelMenu.Button {
 		});
 
 		this.menu.addMenuItem(entryItem);
+
+		//Section text for years
+		let yearSection = new PopupMenu.PopupMenuSection();
+		yearSection.actor.add_child(new PopupMenu.PopupMenuItem('Put in the years the mortgage will be held'));
+		this.menu.addMenuItem(yearSection);
+
+		//Textbox for the years
+		let entry2;
+		entry2 = new St.Entry({
+			hint_text: 'Enter years:',
+			track_hover: true,
+			can_focus: true
+		});
+
+		let entryMenuItem2 = new PopupMenu.PopupBaseMenuItem({
+			reactive: false
+		});
+		entryMenuItem2.actor.add_child(entry2);
+
+		entry2.clutter_text.connect('text-changed', (widget) => {
+			let text2 = widget.get_text();
+			let textNum2 = parseFloat(text2);
+			years = textNum2;
+		});
+
+		this.menu.addMenuItem(entryMenuItem2);
+
+		//Section text for interest
+		let intSection = new PopupMenu.PopupMenuSection();
+		intSection.actor.add_child(new PopupMenu.PopupMenuItem('Put in the annual intrest as a decimal'));
+		this.menu.addMenuItem(intSection);
+
+		//Textbox for interest
+		let entry3;
+		entry3 = new St.Entry({
+			hint_text: 'Enter intrest:',
+			track_hover: true,
+			can_focus: true
+		});
+
+		let entryMenuItem3 = new PopupMenu.PopupBaseMenuItem({
+			reactive: false
+		});
+		entryMenuItem3.actor.add_child(entry3);
+
+		entry3.clutter_text.connect('text-changed', (widget) => {
+			let text3 = widget.get_text();
+			let textNum3 = parseFloat(text3);
+			intrest = textNum3;
+		});
+
+		this.menu.addMenuItem(entryMenuItem3);
+
+		//Button for calculation
+		let calculate = new PopupMenu.PopupMenuItem('Calculate!');
+		this.menu.addMenuItem(calculate);
+		calculate.connect('activate', () => {
+			//Variables
+			var monthInt = (intrest / 12); //Monthly interest
+			var monthPay = (monthInt * amount) / (1-(1/(Math.pow((1+monthInt), (years * 12))))); //Monthly payment
+			var totalPay = monthPay * (12*years); //Total payment
+			//var overpay = totalPay - amount; //Amount overpaid
+
+			//Main.notify(_('Monthly interest: ' + monthInt));
+			//Main.notify(_('Monthly payment: ' + monthPay));
+			Main.notify(_('Total paymnet: $' + totalPay ));
+			//Main.notify(_('Amount overpaid: ' + overpay));
+		});
 
 		//Button for canceling
 		let popupMenuCancel = new PopupMenu.PopupMenuItem('Cancel');
