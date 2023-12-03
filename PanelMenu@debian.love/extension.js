@@ -45,7 +45,7 @@ class MyPopup extends PanelMenu.Button {
 
 		//Title section text
 		let titleSection = new PopupMenu.PopupMenuSection();
-		titleSection.actor.add_child(new PopupMenu.PopupMenuItem('The \"Lovely\" switchblade widget'));
+		titleSection.actor.add_child(new PopupMenu.PopupMenuItem('The \"Lovely\" swiss army  widget', {reactive : false}));
 		this.menu.addMenuItem(titleSection);
 
 		let unitc = new PopupMenu.PopupMenuItem('Unit converter');
@@ -130,12 +130,12 @@ class mortCalcPopup extends PanelMenu.Button {
 
 		//Section text for instructions
 		let insection = new PopupMenu.PopupMenuSection();
-		insection.actor.add_child(new PopupMenu.PopupMenuItem('This is a primative mortgage calculator. \nIt is designed to be an estimate, so actual values may differ in real life.'));
+		insection.actor.add_child(new PopupMenu.PopupMenuItem('This is a primative mortgage calculator. \nIt is designed to be an estimate, so actual values may differ in real life.', {reactive: false}));
 		this.menu.addMenuItem(insection);
 
 		//Section text for amount
 		let amountSection = new PopupMenu.PopupMenuSection();
-		amountSection.actor.add_child(new PopupMenu.PopupMenuItem('Put in the amount borrowed'));
+		amountSection.actor.add_child(new PopupMenu.PopupMenuItem('Put in the amount borrowed', {reactive: false}));
 		this.menu.addMenuItem(amountSection);
 
 		//First textbox for the amount
@@ -162,7 +162,7 @@ class mortCalcPopup extends PanelMenu.Button {
 
 		//Section text for years
 		let yearSection = new PopupMenu.PopupMenuSection();
-		yearSection.actor.add_child(new PopupMenu.PopupMenuItem('Put in the years the mortgage will be held'));
+		yearSection.actor.add_child(new PopupMenu.PopupMenuItem('Put in the years the mortgage will be held', {reactive: false}));
 		this.menu.addMenuItem(yearSection);
 
 		//Textbox for the years
@@ -188,7 +188,7 @@ class mortCalcPopup extends PanelMenu.Button {
 
 		//Section text for interest
 		let intSection = new PopupMenu.PopupMenuSection();
-		intSection.actor.add_child(new PopupMenu.PopupMenuItem('Put in the annual intrest as a decimal'));
+		intSection.actor.add_child(new PopupMenu.PopupMenuItem('Put in the annual intrest as a decimal', {reactive: false}));
 		this.menu.addMenuItem(intSection);
 
 		//Textbox for interest
@@ -220,11 +220,13 @@ class mortCalcPopup extends PanelMenu.Button {
 			var monthInt = (intrest / 12); //Monthly interest
 			var monthPay = (monthInt * amount) / (1-(1/(Math.pow((1+monthInt), (years * 12))))); //Monthly payment
 			var totalPay = monthPay * (12*years); //Total payment
-			//var overpay = totalPay - amount; //Amount overpaid
+			var totalPayFix = totalPay.toFixed(2); //Rounds totalPay to two decimals
+			var overpay = totalPayFix - amount; //Amount overpaid
+			var overpayFix = overpay.toFixed(2) //Rounds overpay
 
 			//Main.notify(_('Monthly interest: ' + monthInt));
 			//Main.notify(_('Monthly payment: ' + monthPay));
-			Main.notify(_('Total paymnet: $' + totalPay ));
+			Main.notify(_('Total pay: $' + totalPayFix + ', overpaid: $' + overpayFix));
 			//Main.notify(_('Amount overpaid: ' + overpay));
 		});
 
@@ -250,7 +252,7 @@ class normCalcPopup extends PanelMenu.Button {
 
 		//Section text for number 1
 		let section1 = new PopupMenu.PopupMenuSection();
-		section1.actor.add_child(new PopupMenu.PopupMenuItem('Put in first number'));
+		section1.actor.add_child(new PopupMenu.PopupMenuItem('Put in first number', {reactive: false}));
 		this.menu.addMenuItem(section1);
 
 		//First textbox for number 1
@@ -277,7 +279,7 @@ class normCalcPopup extends PanelMenu.Button {
 
 		//Section text for number 2
 		let section2 = new PopupMenu.PopupMenuSection();
-		section2.actor.add_child(new PopupMenu.PopupMenuItem('Put in second number'));
+		section2.actor.add_child(new PopupMenu.PopupMenuItem('Put in second number', {reactive: false}));
 		this.menu.addMenuItem(section2);
 
 		//Second textbox for number 2
@@ -303,7 +305,7 @@ class normCalcPopup extends PanelMenu.Button {
 
 		//Third section text for the operator
 		let section3 = new PopupMenu.PopupMenuSection();
-		section3.actor.add_child(new PopupMenu.PopupMenuItem('Put in operator (1=add, 2=sub, 3=mult, 4=mod, 5=div, 6=pow)'));
+		section3.actor.add_child(new PopupMenu.PopupMenuItem('Put in operator (1=add, 2=sub, 3=mult, 4=mod, 5=div, 6=pow)', {reactive: false}));
 		this.menu.addMenuItem(section3);
 
 		//Third textbox for the operation
