@@ -16,6 +16,8 @@
  * SPDX-License-Identifier: GPL-2.0-or-later
  */
 
+//Look at readme.txt file for references used in this project.
+
 /* exported init */
 
 const Main = imports.ui.main;
@@ -72,7 +74,7 @@ class MyPopup extends PanelMenu.Button {
 		//	}
 		//});
 
-		// sub menu
+		// sub menu for calculators
 		let calcs = new PopupMenu.PopupSubMenuMenuItem('Calculators');
 		this.menu.addMenuItem(calcs);
 		let normCalc = new PopupMenu.PopupMenuItem('Normal');
@@ -88,7 +90,7 @@ class MyPopup extends PanelMenu.Button {
 			mortPopup = new mortCalcPopup();
 		});
 
-		// second sub menu
+		// second sub menu for time tools
 		let times =  new PopupMenu.PopupSubMenuMenuItem('Time tools');
 		this.menu.addMenuItem(times);
 		let stopwatch = new PopupMenu.PopupMenuItem('Stopwatch');
@@ -103,7 +105,17 @@ class MyPopup extends PanelMenu.Button {
 		//popupMenuSection.actor.add_child(new PopupMenu.PopupMenuItem('section'));
 		//this.menu.addMenuItem(popupMenuSection);
 
-		// image item
+		//Log command
+		let logCommand = new PopupMenu.PopupImageMenuItem(
+			'Log Command',
+			'security-high-symbolic'
+		);
+		logCommand.connect('activate', () => {
+			logCom = new logComPopup();
+		});
+		this.menu.addMenuItem(logCommand);
+
+		// Shell commands
 		let shellCommands = new PopupMenu.PopupImageMenuItem(
 			'Linux Shell Commands',
 			'security-high-symbolic',
@@ -114,6 +126,61 @@ class MyPopup extends PanelMenu.Button {
 		// this.menu.close();
 		// this.menu.open();
 		// this.menu.toggle();
+	}
+});
+
+//Popup class for Log Command
+const logComPopup = GObject.registerClass(
+class logComPopup extends PanelMenu.Button{
+	_init(){
+		super._init(0);
+
+		//Variable
+		var message;
+
+		//Section text for instructions
+		let lcinst = new PopupMenu.PopupMenuSection();
+		lcinst.actor.add_child(new PopupMenu.PopupMenuItem('This command logs a statement in the terminal,\nif you are running this extension in wayland, it will be\nin the terminal used to run dbus.', {reactive: false}));
+		this.menu.addMenuItem(lcinst);
+
+		//Text box for log statement
+		let entry;
+		entry = new St.Entry({
+			hint_text: 'Enter message',
+			track_hover: true,
+			can_focus: true
+		});
+
+		let entryMenuItem = new PopupMenu.PopupBaseMenuItem({
+			reactive: false
+		});
+		entryMenuItem.actor.add_child(entry);
+
+		entry.clutter_text.connect('text-changed', (widget) => {
+			let text = widget.get_text();
+			message = text;
+		});
+
+		this.menu.addMenuItem(entryMenuItem);
+
+		//Button to log
+		let logButton = new PopupMenu.PopupMenuItem('Log command!');
+		this.menu.addMenuItem(logButton);
+
+		logButton.connect('activate', () => {
+			log('' + message);
+			Main.notify(_('Message logged in terminal'));
+		});
+
+		//Button for canceling
+		let lccancel = new PopupMenu.PopupMenuItem('Cancel');
+		this.menu.addMenuItem(lccancel);
+		lccancel.connect('activate', () => {
+			this.destroy();
+		});
+
+		//Opens menu
+		this.menu.open();
 	}
 });
 
@@ -224,10 +291,7 @@ class mortCalcPopup extends PanelMenu.Button {
 			var overpay = totalPayFix - amount; //Amount overpaid
 			var overpayFix = overpay.toFixed(2) //Rounds overpay
 
-			//Main.notify(_('Monthly interest: ' + monthInt));
-			//Main.notify(_('Monthly payment: ' + monthPay));
 			Main.notify(_('Total pay: $' + totalPayFix + ', overpaid: $' + overpayFix));
-			//Main.notify(_('Amount overpaid: ' + overpay));
 		});
 
 		//Button for canceling
