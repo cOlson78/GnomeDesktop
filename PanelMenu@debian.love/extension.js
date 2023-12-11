@@ -50,14 +50,15 @@ class MyPopup extends PanelMenu.Button {
 		titleSection.actor.add_child(new PopupMenu.PopupMenuItem('The \"Lovely\" swiss army  widget', {reactive : false}));
 		this.menu.addMenuItem(titleSection);
 
+      
+        	//sub menu for unit converter
 		let unitc = new PopupMenu.PopupMenuItem('Unit converter');
-		unitc.add_child(new St.Label({text : '-metric'}));
 		this.menu.addMenuItem(unitc);
 
 		unitc.connect('activate', () => {
-			log('clicked');
-			Main.notify(_('This is the unit converter'));
+			convPopup = new unitConvPopup();
 		});
+
 
 		//this.menu.addMenuItem(
 		//	new PopupMenu.PopupMenuItem(
@@ -126,6 +127,309 @@ class MyPopup extends PanelMenu.Button {
 		// this.menu.close();
 		// this.menu.open();
 		// this.menu.toggle();
+	}
+});
+
+//Popup class for unit converter-----------------------------
+const unitConvPopup = GObject.registerClass(
+class unitConvPopup extends PanelMenu.Button{
+	_init(){
+		super._init(0);
+
+		//Variables
+		var message1;
+	    
+	    //Variables
+		var impAmount = 1;		
+		var metAmount = 1;
+		var validUnits = false;
+		var formulaImpToMet;
+		var formulaMetToImp;
+		
+		var impUnitEntry;
+		
+		var metUnitEntry;
+
+		//Section text for instructions
+		let lcinst11 = new PopupMenu.PopupMenuSection();
+		lcinst11.actor.add_child(new PopupMenu.PopupMenuItem('This is a unit converter for metric and imperial (USA) units', {reactive: false}));
+		this.menu.addMenuItem(lcinst11);
+
+		//1 Text box for imperial unit----------------
+		let impUnitLabel = new PopupMenu.PopupMenuSection();
+		impUnitLabel.actor.add_child(new PopupMenu.PopupMenuItem('Imperial Unit', {reactive: false}));
+		this.menu.addMenuItem(impUnitLabel);
+		
+		let entry1;
+		entry1 = new St.Entry({
+			hint_text: 'Enter imperial unit (singular, not case sensitive)',
+			track_hover: true,
+			can_focus: true
+		});
+
+		let entryMenuItem1 = new PopupMenu.PopupBaseMenuItem({
+			reactive: false
+		});
+		entryMenuItem1.actor.add_child(entry1);
+
+		entry1.clutter_text.connect('text-changed', (widget) => {
+			let text1 = widget.get_text();
+			impUnitEntry = text1.toLowerCase();
+		});
+
+		this.menu.addMenuItem(entryMenuItem1);
+		
+		//2 Text box for metric unit----------------
+		let metUnitLabel = new PopupMenu.PopupMenuSection();
+		metUnitLabel.actor.add_child(new PopupMenu.PopupMenuItem('Metric Unit', {reactive: false}));
+		this.menu.addMenuItem(metUnitLabel);
+		
+		let entry2;
+		entry2 = new St.Entry({
+			hint_text: 'Enter metric unit (singular, not case sensitive)',
+			track_hover: true,
+			can_focus: true
+		});
+
+		let entryMenuItem2 = new PopupMenu.PopupBaseMenuItem({
+			reactive: false
+		});
+		entryMenuItem2.actor.add_child(entry2);
+
+		entry2.clutter_text.connect('text-changed', (widget) => {
+			let text2 = widget.get_text();
+			metUnitEntry = text2.toLowerCase();
+		});
+
+		this.menu.addMenuItem(entryMenuItem2);
+		
+		//3 Text box for metric amount----------------
+		let metValueLabel = new PopupMenu.PopupMenuSection();
+		metValueLabel.actor.add_child(new PopupMenu.PopupMenuItem('Metric Value', {reactive: false}));
+		this.menu.addMenuItem(metValueLabel);
+		
+		let entry3;
+		entry3 = new St.Entry({
+			hint_text: 'Enter metric amount',
+			track_hover: true,
+			can_focus: true
+		});
+
+		let entryMenuItem3 = new PopupMenu.PopupBaseMenuItem({
+			reactive: false
+		});
+		entryMenuItem3.actor.add_child(entry3);
+
+		entry3.clutter_text.connect('text-changed', (widget) => {
+			let text3 = widget.get_text();
+			metAmount = parseFloat(text3);
+		});
+
+		this.menu.addMenuItem(entryMenuItem3);
+		
+		//4 Text box for imperial amount----------------
+		let impValueLabel = new PopupMenu.PopupMenuSection();
+		impValueLabel.actor.add_child(new PopupMenu.PopupMenuItem('Imperial Value', {reactive: false}));
+		this.menu.addMenuItem(impValueLabel);
+		
+		let entry4;
+		entry4 = new St.Entry({
+			hint_text: 'Enter imperial amount',
+			track_hover: true,
+			can_focus: true
+		});
+
+		let entryMenuItem4 = new PopupMenu.PopupBaseMenuItem({
+			reactive: false
+		});
+		entryMenuItem4.actor.add_child(entry4);
+
+		entry4.clutter_text.connect('text-changed', (widget) => {
+			let text4 = widget.get_text();
+			impAmount = parseFloat(text4);
+		});
+
+		this.menu.addMenuItem(entryMenuItem4);
+
+		//Button to compute imperial to metric conversion
+		let computeImptoMet = new PopupMenu.PopupMenuItem('Compute imperial to metric conversion');
+		this.menu.addMenuItem(computeImptoMet);
+
+		computeImptoMet.connect('activate', () => {
+			//check if units are in same domain
+			if(metUnitEntry == 'gram'){
+			    if(impUnitEntry == 'pound' || impUnitEntry == 'ounce' || impUnitEntry == 'ton'){
+			        validUnits = true;
+			        if(impUnitEntry == 'pound'){
+			            formulaImpToMet = (impAmount * 453.6)
+			        }
+			        if(impUnitEntry == 'ounce'){
+			            formulaImpToMet = (impAmount * 28.35)
+			        }
+			        if(impUnitEntry == 'ton'){
+			            formulaImpToMet = (impAmount * 907200.00)
+			        }
+			    }
+			}
+			
+			if(metUnitEntry == 'meter'){
+			    if(impUnitEntry == 'inch' || impUnitEntry == 'foot' || impUnitEntry == 'yard' || impUnitEntry == 'mile' || impUnitEntry == 'nautical mile'){
+			        validUnits = true;
+			        if(impUnitEntry == 'inch'){
+			            formulaImpToMet = (metAmount / 39.37)
+			        }
+			        if(impUnitEntry == 'foot'){
+			            formulaImpToMet = (metAmount / 3.28)
+			        }
+			        if(impUnitEntry == 'yard'){
+			            formulaImpToMet = (metAmount / 1.094)
+			        }
+			        if(impUnitEntry == 'mile'){
+			            formulaImpToMet = (metAmount * 1609.344)
+			        }
+			        if(impUnitEntry == 'nautical mile'){
+			            formulaImpToMet = (metAmount * 1852.00)
+			        }
+			    }
+			}
+			
+			if(metUnitEntry == 'liter'){
+			    if(impUnitEntry == 'gallon' || impUnitEntry == 'quart' || impUnitEntry == 'pint' || impUnitEntry == 'cup' || impUnitEntry == 'tablespoon' || impUnitEntry == 'teaspoon'){
+			        validUnits = true;
+			        if(impUnitEntry == 'gallon'){
+			            formulaImpToMet = (metAmount / 3.79)
+			        }
+			        if(impUnitEntry == 'quart'){
+			            formulaImpToMet = (metAmount * 1.06)
+			        }
+			        if(impUnitEntry == 'pint'){
+			            formulaImpToMet = (metAmount * 2.11)
+			        }
+			        if(impUnitEntry == 'cup'){
+			            formulaImpToMet = (metAmount * 4.23)
+			        }
+			        if(impUnitEntry == 'tablespoon'){
+			            formulaImpToMet = (metAmount * 67.63)
+			        }
+			        if(impUnitEntry == 'teaspoon'){
+			            formulaImpToMet = (metAmount * 202.88)
+			        }
+			    }
+			}
+			
+			if(metUnitEntry == 'celcius' || metUnitEntry == 'kelvin'){
+			    if(impUnitEntry == 'fahrenheit'){
+			        validUnits = true;
+			        if(metUnitEntry == 'celcius'){
+			            formulaImpToMet = (impAmount -32)*(5/9)
+			        }
+			        if(metUnitEntry == 'kelvin'){
+			            formulaImpToMet = ((((impAmount - 32)*5)/9)+273.15)
+			        }
+			    }
+			}
+            
+			Main.notify(_(impAmount+' '+impUnitEntry+ 's = ' +formulaImpToMet+' '+metUnitEntry+'s'));
+			
+			if(validUnits == false){
+			    Main.notify(_('Invalid units, check your entries and try again'));
+			}
+		});
+		
+		//Button to compute metric to imperial conversion
+		let computeMetToImp = new PopupMenu.PopupMenuItem('Compute metric to imperial conversion');
+		this.menu.addMenuItem(computeMetToImp);
+
+		computeMetToImp.connect('activate', () => {
+			//check if units are in same domain
+			if(metUnitEntry == 'gram'){
+			    if(impUnitEntry == 'pound' || impUnitEntry == 'ounce' || impUnitEntry == 'ton'){
+			        validUnits = true;
+			        if(impUnitEntry == 'pound'){
+			            formulaMetToImp = (metAmount / 453.6)
+			        }
+			        if(impUnitEntry == 'ounce'){
+			            formulaMetToImp = (metAmount / 28.35)
+			        }
+			        if(impUnitEntry == 'ton'){
+			            formulaMetToImp = (metAmount / 907200.00)
+			        }
+			    }
+			}
+			
+			if(metUnitEntry == 'meter'){
+			    if(impUnitEntry == 'inch' || impUnitEntry == 'foot' || impUnitEntry == 'yard' || impUnitEntry == 'mile' || impUnitEntry == 'nautical mile'){
+			        validUnits = true;
+			        if(impUnitEntry == 'inch'){
+			            formulaMetToImp = (metAmount * 39.37)
+			        }
+			        if(impUnitEntry == 'foot'){
+			            formulaMetToImp = (metAmount * 3.28)
+			        }
+			        if(impUnitEntry == 'yard'){
+			            formulaMetToImp = (metAmount * 1.094)
+			        }
+			        if(impUnitEntry == 'mile'){
+			            formulaMetToImp = (metAmount / 1609.344)
+			        }
+			        if(impUnitEntry == 'nautical mile'){
+			            formulaMetToImp = (metAmount / 1852.00)
+			        }
+			    }
+			}
+			
+			if(metUnitEntry == 'liter'){
+			    if(impUnitEntry == 'gallon' || impUnitEntry == 'quart' || impUnitEntry == 'pint' || impUnitEntry == 'cup' || impUnitEntry == 'tablespoon' || impUnitEntry == 'teaspoon'){
+			        validUnits = true;
+			        if(impUnitEntry == 'gallon'){
+			            formulaMetToImp = (metAmount * 3.79)
+			        }
+			        if(impUnitEntry == 'quart'){
+			            formulaMetToImp = (metAmount / 1.06)
+			        }
+			        if(impUnitEntry == 'pint'){
+			            formulaMetToImp = (metAmount / 2.11)
+			        }
+			        if(impUnitEntry == 'cup'){
+			            formulaMetToImp = (metAmount / 4.23)
+			        }
+			        if(impUnitEntry == 'tablespoon'){
+			            formulaMetToImp = (metAmount / 67.63)
+			        }
+			        if(impUnitEntry == 'teaspoon'){
+			            formulaMetToImp = (metAmount / 202.88)
+			        }
+			    }
+			}
+			
+			if(metUnitEntry == 'celcius' || metUnitEntry == 'kelvin'){
+			    if(impUnitEntry == 'fahrenheit'){
+			        validUnits = true;
+			        if(metUnitEntry == 'celcius'){
+			            formulaMetToImp = ((metAmount * (9/5)) + 32)
+			        }
+			        if(metUnitEntry == 'kelvin'){
+			            formulaMetToImp = ((((metAmount - 273.15)*9)/5)+32)
+			        }
+			    }
+			}
+            
+			Main.notify(_(formulaMetToImp+' '+impUnitEntry+ 's =' +metAmount+' '+metUnitEntry+'s'));
+			
+			if(validUnits == false){
+			    Main.notify(_('Invalid units, check your entries and try again'));
+			}
+		});
+
+		//Button for canceling
+		let cancelBtn = new PopupMenu.PopupMenuItem('Close this menu');
+		this.menu.addMenuItem(cancelBtn);
+		cancelBtn.connect('activate', () => {
+			this.destroy();
+		});
+
+		//Opens menu
+		this.menu.open();
 	}
 });
 
