@@ -251,7 +251,7 @@ class unitConvPopup extends PanelMenu.Button{
 
 		this.menu.addMenuItem(entryMenuItem4);
 
-		//Button to compute imperial to metric conversion
+		//Button to compute imperial to metric conversion (changing imp value and displaying it as a metric value)
 		let computeImptoMet = new PopupMenu.PopupMenuItem('Compute imperial to metric conversion');
 		this.menu.addMenuItem(computeImptoMet);
 
@@ -276,19 +276,19 @@ class unitConvPopup extends PanelMenu.Button{
 			    if(impUnitEntry == 'inch' || impUnitEntry == 'foot' || impUnitEntry == 'yard' || impUnitEntry == 'mile' || impUnitEntry == 'nautical mile'){
 			        validUnits = true;
 			        if(impUnitEntry == 'inch'){
-			            formulaImpToMet = (metAmount / 39.37)
+			            formulaImpToMet = (impAmount / 39.37)
 			        }
 			        if(impUnitEntry == 'foot'){
-			            formulaImpToMet = (metAmount / 3.28)
+			            formulaImpToMet = (impAmount / 3.28)
 			        }
 			        if(impUnitEntry == 'yard'){
-			            formulaImpToMet = (metAmount / 1.094)
+			            formulaImpToMet = (impAmount / 1.094)
 			        }
 			        if(impUnitEntry == 'mile'){
-			            formulaImpToMet = (metAmount * 1609.344)
+			            formulaImpToMet = (impAmount * 1609.344)
 			        }
 			        if(impUnitEntry == 'nautical mile'){
-			            formulaImpToMet = (metAmount * 1852.00)
+			            formulaImpToMet = (impAmount * 1852.00)
 			        }
 			    }
 			}
@@ -297,22 +297,22 @@ class unitConvPopup extends PanelMenu.Button{
 			    if(impUnitEntry == 'gallon' || impUnitEntry == 'quart' || impUnitEntry == 'pint' || impUnitEntry == 'cup' || impUnitEntry == 'tablespoon' || impUnitEntry == 'teaspoon'){
 			        validUnits = true;
 			        if(impUnitEntry == 'gallon'){
-			            formulaImpToMet = (metAmount / 3.79)
+			            formulaImpToMet = (impAmount / 3.79)
 			        }
 			        if(impUnitEntry == 'quart'){
-			            formulaImpToMet = (metAmount * 1.06)
+			            formulaImpToMet = (impAmount * 1.06)
 			        }
 			        if(impUnitEntry == 'pint'){
-			            formulaImpToMet = (metAmount * 2.11)
+			            formulaImpToMet = (impAmount * 2.11)
 			        }
 			        if(impUnitEntry == 'cup'){
-			            formulaImpToMet = (metAmount * 4.23)
+			            formulaImpToMet = (impAmount * 4.23)
 			        }
 			        if(impUnitEntry == 'tablespoon'){
-			            formulaImpToMet = (metAmount * 67.63)
+			            formulaImpToMet = (impAmount / 67.63)
 			        }
 			        if(impUnitEntry == 'teaspoon'){
-			            formulaImpToMet = (metAmount * 202.88)
+			            formulaImpToMet = (impAmount / 202.88)
 			        }
 			    }
 			}
@@ -321,7 +321,7 @@ class unitConvPopup extends PanelMenu.Button{
 			    if(impUnitEntry == 'fahrenheit'){
 			        validUnits = true;
 			        if(metUnitEntry == 'celcius'){
-			            formulaImpToMet = (impAmount -32)*(5/9)
+			            formulaImpToMet = (impAmount - 32)*(5/9)
 			        }
 			        if(metUnitEntry == 'kelvin'){
 			            formulaImpToMet = ((((impAmount - 32)*5)/9)+273.15)
@@ -336,7 +336,7 @@ class unitConvPopup extends PanelMenu.Button{
 			}
 		});
 		
-		//Button to compute metric to imperial conversion
+		//Button to compute metric to imperial conversion (metric num is being changed as displayed as imperial value)
 		let computeMetToImp = new PopupMenu.PopupMenuItem('Compute metric to imperial conversion');
 		this.menu.addMenuItem(computeMetToImp);
 
@@ -394,10 +394,10 @@ class unitConvPopup extends PanelMenu.Button{
 			            formulaMetToImp = (metAmount / 4.23)
 			        }
 			        if(impUnitEntry == 'tablespoon'){
-			            formulaMetToImp = (metAmount / 67.63)
+			            formulaMetToImp = (metAmount * 67.63)
 			        }
 			        if(impUnitEntry == 'teaspoon'){
-			            formulaMetToImp = (metAmount / 202.88)
+			            formulaMetToImp = (metAmount * 202.88)
 			        }
 			    }
 			}
@@ -414,7 +414,7 @@ class unitConvPopup extends PanelMenu.Button{
 			    }
 			}
             
-			Main.notify(_(formulaMetToImp+' '+impUnitEntry+ 's =' +metAmount+' '+metUnitEntry+'s'));
+			Main.notify(_(metAmount+' '+metUnitEntry+ 's = ' +formulaMetToImp+' '+impUnitEntry+'s'));
 			
 			if(validUnits == false){
 			    Main.notify(_('Invalid units, check your entries and try again'));
