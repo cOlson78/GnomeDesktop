@@ -59,22 +59,6 @@ class MyPopup extends PanelMenu.Button {
 			convPopup = new unitConvPopup();
 		});
 
-
-		//this.menu.addMenuItem(
-		//	new PopupMenu.PopupMenuItem(
-		//		"User cannot click on this item",
-		//		{reactive : false},
-		//	)
-		//);
-
-		//this.menu.connect('open-state-changed', (menu, open) => {
-		//	if (open) {
-		//		log('opened');
-		//	} else {
-		//		log('closed');
-		//	}
-		//});
-
 		// sub menu for calculators
 		let calcs = new PopupMenu.PopupSubMenuMenuItem('Calculators');
 		this.menu.addMenuItem(calcs);
@@ -101,11 +85,6 @@ class MyPopup extends PanelMenu.Button {
 		let clock = new PopupMenu.PopupMenuItem('Clock');
 		times.menu.addMenuItem(clock);
 
-		// section
-		//let popupMenuSection = new PopupMenu.PopupMenuSection();
-		//popupMenuSection.actor.add_child(new PopupMenu.PopupMenuItem('section'));
-		//this.menu.addMenuItem(popupMenuSection);
-
 		//Log command
 		let logCommand = new PopupMenu.PopupImageMenuItem(
 			'Log Command',
@@ -116,17 +95,17 @@ class MyPopup extends PanelMenu.Button {
 		});
 		this.menu.addMenuItem(logCommand);
 
-		// Shell commands
-		let shellCommands = new PopupMenu.PopupImageMenuItem(
-			'Linux Shell Commands',
-			'security-high-symbolic',
-		);
-		this.menu.addMenuItem(shellCommands);
+		/* Linux shell commands: This was originally going to be related
+		to the Grep/Awk manager, but due to unforeseen events, it is unused.
+		we will keep this code here to add it back if we desire to come
+		back to this in the future.*/
 
-		// you can close, open and toggle the menu with
-		// this.menu.close();
-		// this.menu.open();
-		// this.menu.toggle();
+		// Shell commands
+		//let shellCommands = new PopupMenu.PopupImageMenuItem(
+		//	'Linux Shell Commands',
+		//	'security-high-symbolic',
+		//);
+		//this.menu.addMenuItem(shellCommands);
 	}
 });
 
